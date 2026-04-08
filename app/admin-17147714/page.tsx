@@ -53,7 +53,14 @@ export default function AdminPage() {
 
         <div className="launch-overlay">
           <button type="button" onClick={handleLaunch} disabled={isLaunching} className="launch-btn">
-            {isLaunching ? "Launching..." : <>Launch<br/>Hackathon</>}
+            {isLaunching ? (
+              <span className="launch-btn-label">Launching...</span>
+            ) : (
+              <span className="launch-btn-label">
+                <span>Launch</span>
+                <span>Hackathon</span>
+              </span>
+            )}
           </button>
 
           {message ? <p className="status-text">{message}</p> : null}

@@ -23,8 +23,7 @@ function formatTime(ms: number) {
 
 export default function HomeClient() {
   const [timer, setTimer] = useState<TimerState>({ started: false, startTime: null });
-  const [now, setNow] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     let isActive = true;
@@ -36,8 +35,6 @@ export default function HomeClient() {
     }
 
     loadTimer();
-    setMounted(true);
-    setNow(Date.now());
 
     const interval = setInterval(() => setNow(Date.now()), 1000);
 
@@ -48,42 +45,87 @@ export default function HomeClient() {
   }, []);
 
   const countdown = useMemo(() => {
-    if (!mounted || !timer.started || !timer.startTime) return HACKATHON_DURATION_MS;
+    if (!now || !timer.started || !timer.startTime) return HACKATHON_DURATION_MS;
 
     return Math.max(0, timer.startTime + HACKATHON_DURATION_MS - now);
-  }, [mounted, now, timer.started, timer.startTime]);
+  }, [now, timer.started, timer.startTime]);
 
-  const displayTimer = mounted && timer.started ? formatTime(countdown) : "--:--:--";
+  const displayTimer = now && timer.started ? formatTime(countdown) : "--:--:--";
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-3 py-6 font-sans sm:px-6">
       <Image src="/background.webp" alt="Clash background" fill priority className="object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/50 to-black/75" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.14),transparent_45%)]" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/55 via-black/50 to-black/75" />
+      <div className="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.14),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 z-2 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_52%_14%,rgba(240,198,96,0.26),transparent_38%)]" />
+        <Image
+          src="/cloud.svg"
+          alt="Background cloud"
+          width={1800}
+          height={900}
+          className="absolute left-1/2 top-[-52%] h-auto w-[145vw] max-w-none -translate-x-1/2 opacity-30"
+        />
+        <Image
+          src="/cloud.svg"
+          alt="Left mist cloud"
+          width={1000}
+          height={600}
+          className="absolute -left-[24%] top-[46%] h-auto w-[68vw] max-w-none opacity-28"
+        />
+        <Image
+          src="/clou2.svg"
+          alt="Right mist cloud"
+          width={1000}
+          height={600}
+          className="absolute -right-[28%] top-[40%] h-auto w-[66vw] max-w-none opacity-24"
+        />
+      </div>
 
       <Image
-        src="/scenery.webp"
-        alt="Village scenery"
-        width={1600}
+        src="/dragon.webp"
+        alt="Dragon"
+        width={500}
         height={500}
-        className="pointer-events-none absolute bottom-0 left-1/2 z-[1] h-auto w-[1300px] max-w-none -translate-x-1/2 opacity-70"
+        className="pointer-events-none fixed right-[-2%] top-[5%] z-12 hidden h-auto w-125 md:block"
+      />
+      <Image
+        src="/builder.webp"
+        alt="Builder"
+        width={620}
+        height={620}
+        className="pointer-events-none fixed -bottom-5 right-0 z-15 hidden h-auto w-155 max-w-[82vw] drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] md:block"
+      />
+      <Image
+        src="/goblin.webp"
+        alt="Goblin"
+        width={440}
+        height={440}
+        className="pointer-events-none fixed -bottom-12.5 left-32.5 z-11 hidden h-auto w-110 max-w-[48vw] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)] md:block"
+      />
+      <Image
+        src="/goldstorage.webp"
+        alt="Gold"
+        width={620}
+        height={620}
+        className="pointer-events-none fixed -bottom-46.5 -left-35.5 z-8 hidden h-auto w-155 max-w-[62vw] drop-shadow-[0_10px_20px_rgba(0,0,0,0.45)] md:block"
       />
       <Image
         src="/villagebuilder.webp"
         alt="Village Builder"
-        width={320}
-        height={320}
-        className="pointer-events-none absolute left-1/2 top-2 z-[2] hidden h-auto w-36 -translate-x-1/2 opacity-85 md:block lg:w-44"
+        width={430}
+        height={430}
+        className="pointer-events-none absolute left-[40%] top-[74%] z-9 hidden h-auto w-107.5 max-w-[50vw] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] md:block"
       />
 
-      <main className="relative z-10 w-full max-w-4xl rounded-3xl border border-amber-100/60 bg-black/45 px-4 py-6 shadow-2xl backdrop-blur-[4px] sm:px-8 sm:py-8">
+      <main className="relative z-10 w-full max-w-4xl rounded-3xl border border-amber-100/60 bg-black/45 px-4 py-6 shadow-2xl backdrop-blur-xs sm:px-8 sm:py-8">
         <div className="mb-5 flex items-center justify-between gap-3">
           <Image
             src="/arka_jain_logo.png"
             alt="Organizer logo"
             width={220}
             height={88}
-            className="h-auto w-32 sm:w-44"
+            className="h-auto w-36 sm:w-48"
           />
           <div className="rounded-full border border-amber-200/50 bg-amber-400/20 px-3 py-1 text-[10px] font-semibold tracking-[0.2em] text-amber-100 sm:text-xs">
             CLASH MODE
@@ -103,7 +145,7 @@ export default function HomeClient() {
             <h1 className="mb-3 text-center text-xl font-extrabold tracking-wide text-amber-100 sm:text-3xl">
               24-Hour Hackathon Timer
             </h1>
-            <div className="w-full rounded-xl border border-amber-200/40 bg-zinc-950/70 px-3 py-4 text-center shadow-inner sm:px-8 sm:py-5">
+            <div className="relative w-full overflow-hidden rounded-xl border border-amber-200/40 bg-zinc-950/70 px-3 py-4 text-center shadow-inner sm:px-8 sm:py-5">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/80">Battle Clock</p>
               <span className="text-4xl font-mono font-bold tracking-widest text-lime-300 sm:text-6xl">{displayTimer}</span>
               <p className="mt-3 text-sm text-zinc-200 sm:text-base">
@@ -151,6 +193,7 @@ export default function HomeClient() {
           </div>
         </div>
       </main>
+
     </div>
   );
 }
