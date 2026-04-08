@@ -125,7 +125,7 @@ export default function HomeClient() {
             alt="Organizer logo"
             width={220}
             height={88}
-            className="h-auto w-36 sm:w-48"
+            className="h-auto w-39 sm:w-49"
           />
           <div className="rounded-full border border-amber-200/50 bg-amber-400/20 px-3 py-1 text-[10px] font-semibold tracking-[0.2em] text-amber-100 sm:text-xs">
             CLASH MODE
