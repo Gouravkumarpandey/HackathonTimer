@@ -30,18 +30,35 @@ export default function HomeClient() {
     let isActive = true;
 
     async function loadTimer() {
-      const res = await fetch("/api/timer", { cache: "no-store" });
-      const data = (await res.json()) as TimerState;
-      if (isActive) setTimer(data);
+      try {
+        const res = await fetch("/api/timer", { cache: "no-store" });
+        const data = (await res.json()) as TimerState;
+        if (isActive) {
+          setTimer(data);
+        }
+      } catch {
+        // Keep existing UI state on transient network failures.
+      }
     }
 
     loadTimer();
 
-    const interval = setInterval(() => setNow(Date.now()), 1000);
+    const clockInterval = setInterval(() => setNow(Date.now()), 1000);
+    const syncInterval = setInterval(loadTimer, 1500);
+
+    const handleFocus = () => {
+      loadTimer();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
 
     return () => {
       isActive = false;
-      clearInterval(interval);
+      clearInterval(clockInterval);
+      clearInterval(syncInterval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
     };
   }, []);
 
