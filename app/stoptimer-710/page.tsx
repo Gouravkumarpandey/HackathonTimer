@@ -3,7 +3,7 @@
 import { useState } from "react";
 import "../Timer.css";
 
-type TimerAction = "stop" | "reset";
+type TimerAction = "start" | "stop" | "reset";
 
 export default function StopTimerPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +26,12 @@ export default function StopTimerPage() {
       const result = (await response.json()) as { success?: boolean; message?: string };
 
       if (result.success) {
-        const fallbackMessage = action === "stop" ? "Timer has been paused." : "Timer has been reset.";
+        const fallbackMessage =
+          action === "start"
+            ? "Timer has been resumed."
+            : action === "stop"
+              ? "Timer has been paused."
+              : "Timer has been reset.";
         setMessage(result.message ?? fallbackMessage);
         return;
       }
@@ -52,6 +57,19 @@ export default function StopTimerPage() {
 
         <div className="launch-overlay" style={{ top: "40%", zIndex: 30 }}>
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+            <button
+              type="button"
+              onClick={() => handleAction("start")}
+              disabled={isSubmitting}
+              className="launch-btn"
+              style={{ width: "150px", minHeight: "84px", padding: "8px 14px" }}
+            >
+              <span className="launch-btn-label">
+                <span>Resume</span>
+                <span>Timer</span>
+              </span>
+            </button>
+
             <button
               type="button"
               onClick={() => handleAction("stop")}
