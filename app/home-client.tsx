@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 type TimerState = {
   started: boolean;
+  paused?: boolean;
   startTime: number | null;
   remainingMs?: number;
 };
@@ -71,11 +72,12 @@ export default function HomeClient() {
   }, [now, timer.started, timer.startTime, timer.remainingMs]);
 
   const hasTimerProgress = (timer.remainingMs ?? HACKATHON_DURATION_MS) < HACKATHON_DURATION_MS;
-  const displayTimer = timer.started || hasTimerProgress ? formatTime(countdown) : "--:--:--";
+  const isPaused = Boolean(timer.paused);
+  const displayTimer = timer.started || isPaused || hasTimerProgress ? formatTime(countdown) : "--:--:--";
 
   const timerMessage = timer.started
     ? "War has begun. Build fast."
-    : hasTimerProgress
+    : isPaused || hasTimerProgress
       ? "Timer paused. Waiting to resume..."
       : "Waiting for launch...";
 

@@ -4,12 +4,14 @@ const HACKATHON_DURATION_MS = 24 * 60 * 60 * 1000;
 
 type TimerState = {
   started: boolean;
+  paused: boolean;
   startTime: number | null;
   remainingMs: number;
 };
 
 const initialTimerState: TimerState = {
   started: false,
+  paused: false,
   startTime: null,
   remainingMs: HACKATHON_DURATION_MS,
 };
@@ -49,6 +51,7 @@ export async function POST(request: Request) {
       updateTimerState({
         ...timerState,
         started: true,
+        paused: false,
         startTime: Date.now(),
       });
       return NextResponse.json({ success: true, ...timerState });
@@ -71,6 +74,7 @@ export async function POST(request: Request) {
 
     updateTimerState({
       started: false,
+      paused: true,
       startTime: null,
       remainingMs,
     });
@@ -80,6 +84,7 @@ export async function POST(request: Request) {
 
   updateTimerState({
     started: false,
+    paused: false,
     startTime: null,
     remainingMs: HACKATHON_DURATION_MS,
   });
