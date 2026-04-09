@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 type TimerState = {
   started: boolean;
   startTime: number | null;
+  remainingMs?: number;
 };
 
 const HACKATHON_DURATION_MS = 24 * 60 * 60 * 1000;
@@ -45,12 +46,21 @@ export default function HomeClient() {
   }, []);
 
   const countdown = useMemo(() => {
-    if (!now || !timer.started || !timer.startTime) return HACKATHON_DURATION_MS;
+    const baseRemainingMs = timer.remainingMs ?? HACKATHON_DURATION_MS;
 
-    return Math.max(0, timer.startTime + HACKATHON_DURATION_MS - now);
-  }, [now, timer.started, timer.startTime]);
+    if (!now || !timer.started || !timer.startTime) return baseRemainingMs;
 
-  const displayTimer = now && timer.started ? formatTime(countdown) : "--:--:--";
+    return Math.max(0, timer.startTime + baseRemainingMs - now);
+  }, [now, timer.started, timer.startTime, timer.remainingMs]);
+
+  const hasTimerProgress = (timer.remainingMs ?? HACKATHON_DURATION_MS) < HACKATHON_DURATION_MS;
+  const displayTimer = timer.started || hasTimerProgress ? formatTime(countdown) : "--:--:--";
+
+  const timerMessage = timer.started
+    ? "War has begun. Build fast."
+    : hasTimerProgress
+      ? "Timer paused. Waiting to resume..."
+      : "Waiting for launch...";
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-3 py-6 font-sans sm:px-6">
@@ -148,9 +158,7 @@ export default function HomeClient() {
             <div className="relative w-full overflow-hidden rounded-xl border border-amber-200/40 bg-zinc-950/70 px-3 py-4 text-center shadow-inner sm:px-8 sm:py-5">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/80">Battle Clock</p>
               <span className="text-4xl font-mono font-bold tracking-widest text-lime-300 sm:text-6xl">{displayTimer}</span>
-              <p className="mt-3 text-sm text-zinc-200 sm:text-base">
-                {timer.started ? "War has begun. Build fast." : "Waiting for launch..."}
-              </p>
+              <p className="mt-3 text-sm text-zinc-200 sm:text-base">{timerMessage}</p>
             </div>
 
             <a
