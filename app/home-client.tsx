@@ -10,7 +10,7 @@ type TimerState = {
   remainingMs?: number;
 };
 
-const HACKATHON_DURATION_MS = 24 * 60 * 60 * 1000;
+const HACKATHON_DURATION_MS = (24 - 5) * 60 * 60 * 1000;
 
 function formatTime(ms: number) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
@@ -79,7 +79,7 @@ export default function HomeClient() {
     ? "War has begun. Build fast."
     : isPaused || hasTimerProgress
       ? "Timer paused. Waiting to resume..."
-      : "Waiting for launch...";
+      : "Timer is live.";
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-3 py-6 font-sans sm:px-6">

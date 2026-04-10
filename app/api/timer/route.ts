@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-const HACKATHON_DURATION_MS = 24 * 60 * 60 * 1000;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const HACKATHON_DURATION_MS = (18 * 60 + 55) * 60 * 1000;
 
 type TimerState = {
   started: boolean;
@@ -10,9 +13,9 @@ type TimerState = {
 };
 
 const initialTimerState: TimerState = {
-  started: false,
+  started: true,
   paused: false,
-  startTime: null,
+  startTime: Date.now(),
   remainingMs: HACKATHON_DURATION_MS,
 };
 
@@ -29,11 +32,25 @@ function updateTimerState(next: TimerState) {
   globalTimer.__hackathonTimerState = next;
 }
 
+function ensureAutoStarted() {
+  if (!timerState.started && !timerState.paused && timerState.remainingMs > 0) {
+    updateTimerState({
+      started: true,
+      paused: false,
+      startTime: Date.now(),
+      remainingMs:
+        timerState.remainingMs === 24 * 60 * 60 * 1000 ? HACKATHON_DURATION_MS : timerState.remainingMs,
+    });
+  }
+}
+
 export async function GET() {
+  ensureAutoStarted();
   return NextResponse.json(timerState);
 }
 
 export async function POST(request: Request) {
+  ensureAutoStarted();
   let action: "start" | "stop" | "reset" = "start";
 
   try {
@@ -83,11 +100,11 @@ export async function POST(request: Request) {
   }
 
   updateTimerState({
-    started: false,
+    started: true,
     paused: false,
-    startTime: null,
+    startTime: Date.now(),
     remainingMs: HACKATHON_DURATION_MS,
   });
 
-  return NextResponse.json({ success: true, ...timerState, message: "Timer has been reset." });
+  return NextResponse.json({ success: true, ...timerState, message: "Timer has been reset and started." });
 }
