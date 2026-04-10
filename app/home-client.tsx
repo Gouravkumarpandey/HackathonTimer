@@ -10,7 +10,7 @@ type TimerState = {
   remainingMs?: number;
 };
 
-const HACKATHON_DURATION_MS = (24 - 5) * 60 * 60 * 1000;
+const HACKATHON_DURATION_MS = (18 * 60 + 55) * 60 * 1000;
 
 function formatTime(ms: number) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
