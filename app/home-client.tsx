@@ -181,8 +181,9 @@ export default function HomeClient() {
             </div>
 
             <a
-              href={timer.started ? "/problem-statement.txt" : undefined}
-              download={timer.started ? "problem-statement.txt" : undefined}
+              href={timer.started ? "https://drive.google.com/drive/folders/1bzWK-UzACA6Sn6nHq9tcRFXqb8Fng9oU?usp=sharing" : undefined}
+              target={timer.started ? "_blank" : undefined}
+              rel={timer.started ? "noopener noreferrer" : undefined}
               className={`mt-4 block w-full rounded-xl px-6 py-3 text-center text-base font-bold text-white transition-all sm:text-lg ${
                 timer.started ? "cursor-pointer bg-blue-600 hover:bg-blue-700" : "cursor-not-allowed bg-gray-500"
               }`}
